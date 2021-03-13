@@ -10,10 +10,7 @@ defmodule Mobilizon.Web.Endpoint do
   use Absinthe.Phoenix.Endpoint
 
   plug(Mobilizon.Web.Plugs.SetLocalePlug)
-
-  if Application.fetch_env!(:mobilizon, :env) !== :dev do
-    plug(Mobilizon.Web.Plugs.HTTPSecurityPlug)
-  end
+  plug(Mobilizon.Web.Plugs.HTTPSecurityPlug)
 
   # For e2e tests
   if Application.get_env(:mobilizon, :sql_sandbox) do

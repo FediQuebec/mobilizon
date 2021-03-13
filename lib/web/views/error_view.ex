@@ -7,13 +7,8 @@ defmodule Mobilizon.Web.ErrorView do
   import Mobilizon.Web.Views.Utils
 
   def render("404.html", %{conn: conn}) do
-    with tags <- Instance.build_tags(),
-         {:ok, html} <- inject_tags(tags, get_locale(conn)) do
-      html
-    else
-      {:error, error} ->
-        return_error(conn, error)
-    end
+    tags = Instance.build_tags()
+    inject_tags(tags, get_locale(conn))
   end
 
   def render("404.json", _assigns) do
@@ -43,18 +38,12 @@ defmodule Mobilizon.Web.ErrorView do
     }
   end
 
-  def render("500.html", assigns) do
+  def render("500.html", _assigns) do
     Mobilizon.Config.instance_config()
     |> Keyword.get(:default_language, "en")
     |> Gettext.put_locale()
 
-    assigns =
-      assigns
-      |> Map.update(:details, [], & &1)
-      |> Map.put(:instance, Mobilizon.Config.instance_name())
-      |> Map.put(:contact, Mobilizon.Config.contact())
-
-    render("500_page.html", assigns)
+    render("500_page.html", %{})
   end
 
   # In case no render clause matches or no

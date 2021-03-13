@@ -57,27 +57,14 @@
             <b-skeleton v-else :animated="true" />
             <br />
             <div class="buttons">
-              <b-button
-                outlined
-                icon-left="timeline-text"
-                v-if="isCurrentActorAGroupMember"
-                tag="router-link"
-                :to="{
-                  name: RouteName.TIMELINE,
-                  params: { preferredUsername: usernameWithDomain(group) },
-                }"
-                >{{ $t("Activity") }}</b-button
-              >
-              <b-button
-                outlined
-                icon-left="cog"
+              <router-link
                 v-if="isCurrentActorAGroupAdmin"
-                tag="router-link"
                 :to="{
                   name: RouteName.GROUP_PUBLIC_SETTINGS,
                   params: { preferredUsername: usernameWithDomain(group) },
                 }"
-                >{{ $t("Group settings") }}</b-button
+                class="button is-outlined"
+                >{{ $t("Group settings") }}</router-link
               >
             </div>
           </div>
@@ -519,9 +506,11 @@ import ReportModal from "../../components/Report/ReportModal.vue";
   },
   metaInfo() {
     return {
+      // if no subcomponents specify a metaInfo.title, this title will be used
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       title: this.groupTitle,
+      // all titles will be injected into this template
       titleTemplate: "%s | Mobilizon",
       meta: [
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -628,14 +617,15 @@ export default class Group extends mixins(GroupMixin) {
   }
 
   get groupMember(): IMember | undefined {
-    if (this.person?.memberships?.total > 0) {
-      return this.person?.memberships?.elements[0];
-    }
-    return undefined;
+    if (!this.person || !this.person.id) return undefined;
+    return this.person.memberships.elements.find(
+      ({ parent: { id } }) => id === this.group.id
+    );
   }
 
   get groupMemberships(): (string | undefined)[] {
-    return this.person?.memberships?.elements
+    if (!this.person || !this.person.id) return [];
+    return this.person.memberships.elements
       .filter(
         (membership: IMember) =>
           ![

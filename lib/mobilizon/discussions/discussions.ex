@@ -43,8 +43,7 @@ defmodule Mobilizon.Discussions do
     :replies,
     :tags,
     :mentions,
-    :discussion,
-    :media
+    :discussion
   ]
 
   @discussion_preloads [
@@ -329,7 +328,7 @@ defmodule Mobilizon.Discussions do
   @doc """
   Get a discussion by it's ID
   """
-  @spec get_discussion(String.t() | integer()) :: Discussion.t() | nil
+  @spec get_discussion(String.t() | integer()) :: Discussion.t()
   def get_discussion(discussion_id) do
     Discussion
     |> Repo.get(discussion_id)
@@ -399,8 +398,7 @@ defmodule Mobilizon.Discussions do
                                                    } ->
              Changeset.change(comment, %{discussion_id: discussion_id, url: discussion_url})
            end)
-           |> Repo.transaction(),
-         %Discussion{} = discussion <- Repo.preload(discussion, @discussion_preloads) do
+           |> Repo.transaction() do
       {:ok, discussion}
     end
   end
@@ -428,9 +426,8 @@ defmodule Mobilizon.Discussions do
                %{last_comment_id: comment_id}
              )
            end)
-           |> Repo.transaction(),
-         # Discussion is not updated
-         %Comment{} = comment <- Repo.preload(comment, @comment_preloads) do
+           |> Repo.transaction() do
+      # Discussion is not updated
       {:ok, Map.put(discussion, :last_comment, comment)}
     end
   end

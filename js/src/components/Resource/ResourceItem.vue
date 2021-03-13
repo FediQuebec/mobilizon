@@ -58,14 +58,8 @@ export default class ResourceItem extends Vue {
 
   mapServiceTypeToIcon = mapServiceTypeToIcon;
 
-  get urlHostname(): string | undefined {
-    if (this.resource?.resourceUrl) {
-      return new URL(this.resource.resourceUrl).hostname.replace(
-        /^(www\.)/,
-        ""
-      );
-    }
-    return undefined;
+  get urlHostname(): string {
+    return new URL(this.resource.resourceUrl).hostname.replace(/^(www\.)/, "");
   }
 }
 </script>

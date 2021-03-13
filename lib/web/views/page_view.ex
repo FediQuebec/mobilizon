@@ -63,26 +63,16 @@ defmodule Mobilizon.Web.PageView do
 
   def render(page, %{object: object, conn: conn} = _assigns)
       when page in ["actor.html", "event.html", "comment.html", "post.html"] do
-    with locale <- get_locale(conn),
-         tags <- object |> Metadata.build_tags(locale),
-         {:ok, html} <- inject_tags(tags, locale) do
-      html
-    else
-      {:error, error} ->
-        return_error(conn, error)
-    end
+    locale = get_locale(conn)
+    tags = object |> Metadata.build_tags(locale)
+    inject_tags(tags, locale)
   end
 
   # Discussions are private, no need to embed metadata
   def render("discussion.html", params), do: render("index.html", params)
 
   def render("index.html", %{conn: conn}) do
-    with tags <- Instance.build_tags(),
-         {:ok, html} <- inject_tags(tags, get_locale(conn)) do
-      html
-    else
-      {:error, error} ->
-        return_error(conn, error)
-    end
+    tags = Instance.build_tags()
+    inject_tags(tags, get_locale(conn))
   end
 end

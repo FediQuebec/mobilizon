@@ -115,10 +115,7 @@ defmodule Mobilizon.Resources do
     Multi.new()
     |> do_find_parent_path(Map.get(attrs, :parent_id))
     |> Multi.insert(:insert, fn %{find_parent_path: path} ->
-      Resource.changeset(
-        %Resource{},
-        Map.put(attrs, :path, "#{path}/#{String.replace(attrs.title, "/", "")}")
-      )
+      Resource.changeset(%Resource{}, Map.put(attrs, :path, "#{path}/#{attrs.title}"))
     end)
     |> Repo.transaction()
     |> case do
@@ -145,11 +142,7 @@ defmodule Mobilizon.Resources do
     |> update_children(resource, attrs)
     |> Multi.update(:update, fn %{find_parent_path: path} ->
       title = Map.get(attrs, :title, old_title)
-
-      Resource.changeset(
-        resource,
-        Map.put(attrs, :path, "#{path}/#{String.replace(title, "/", "")}")
-      )
+      Resource.changeset(resource, Map.put(attrs, :path, "#{path}/#{title}"))
     end)
     |> Repo.transaction()
     |> case do

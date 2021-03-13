@@ -1,4 +1,4 @@
-defmodule Mobilizon.Service.CleanOrphanMediaTest do
+defmodule Mix.Tasks.Mobilizon.Media.CleanOrphanTest do
   use Mobilizon.DataCase
 
   import Mobilizon.Factory

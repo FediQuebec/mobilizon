@@ -33,13 +33,14 @@
     </nav>
     <section
       class="container section"
-      v-if="group && isCurrentActorAGroupAdmin && followers"
+      v-if="group && isCurrentActorAGroupAdmin"
     >
       <h1>{{ $t("Group Followers") }} ({{ followers.total }})</h1>
       <b-field :label="$t('Status')" horizontal>
         <b-switch v-model="pending">{{ $t("Pending") }}</b-switch>
       </b-field>
       <b-table
+        v-if="followers"
         :data="followers.elements"
         ref="queueTable"
         :loading="this.$apollo.loading"
@@ -244,14 +245,11 @@ export default class GroupFollowers extends mixins(GroupMixin) {
           },
         ],
       });
-      const message = approved
-        ? this.$t("@{username}'s follow request was accepted", {
-            username: follower.actor.preferredUsername,
-          })
-        : this.$t("@{username}'s follow request was rejected", {
-            username: follower.actor.preferredUsername,
-          });
-      this.$notifier.success(message as string);
+      this.$notifier.success(
+        this.$t("@{username}'s follow request was rejected", {
+          username: follower.actor.preferredUsername,
+        }) as string
+      );
     } catch (error) {
       console.error(error);
       if (error.graphQLErrors && error.graphQLErrors.length > 0) {

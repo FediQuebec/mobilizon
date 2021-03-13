@@ -23,12 +23,7 @@ defmodule Mobilizon.Web.AuthView do
       Tag.tag(:meta, name: "auth-user-actor-id", content: user_actor_id)
     ]
 
-    with tags <- Instance.build_tags() ++ info_tags,
-         {:ok, html} <- inject_tags(tags, get_locale(conn)) do
-      html
-    else
-      {:error, error} ->
-        return_error(conn, error)
-    end
+    tags = Instance.build_tags() ++ info_tags
+    inject_tags(tags, get_locale(conn))
   end
 end
