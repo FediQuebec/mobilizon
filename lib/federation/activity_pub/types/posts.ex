@@ -7,6 +7,7 @@ defmodule Mobilizon.Federation.ActivityPub.Types.Posts do
   alias Mobilizon.Federation.ActivityStream.Converter.Utils, as: ConverterUtils
   alias Mobilizon.Federation.ActivityStream.Convertible
   alias Mobilizon.Posts.Post
+  alias Mobilizon.Service.Activity.Post, as: PostsActivity
   require Logger
   import Mobilizon.Federation.ActivityPub.Utils, only: [make_create_data: 2, make_update_data: 2]
 
@@ -19,13 +20,12 @@ defmodule Mobilizon.Federation.ActivityPub.Types.Posts do
     with args <- Map.update(args, :tags, [], &ConverterUtils.fetch_tags/1),
          {:ok, %Post{attributed_to_id: group_id, author_id: creator_id} = post} <-
            Posts.create_post(args),
+         {:ok, _} <- PostsActivity.insert_activity(post, subject: "post_created"),
          {:ok, %Actor{} = group} <- Actors.get_group_by_actor_id(group_id),
          %Actor{} = creator <- Actors.get_actor(creator_id),
          post_as_data <-
-           Convertible.model_to_as(%{post | attributed_to: group, author: creator}),
-         audience <-
-           Audience.calculate_to_and_cc_from_mentions(post) do
-      create_data = make_create_data(post_as_data, Map.merge(audience, additional))
+           Convertible.model_to_as(%{post | attributed_to: group, author: creator}) do
+      create_data = make_create_data(post_as_data, additional)
 
       {:ok, post, create_data}
     else
@@ -40,6 +40,7 @@ defmodule Mobilizon.Federation.ActivityPub.Types.Posts do
     with args <- Map.update(args, :tags, [], &ConverterUtils.fetch_tags/1),
          {:ok, %Post{attributed_to_id: group_id, author_id: creator_id} = post} <-
            Posts.update_post(post, args),
+         {:ok, _} <- PostsActivity.insert_activity(post, subject: "post_updated"),
          {:ok, true} <- Cachex.del(:activity_pub, "post_#{post.slug}"),
          {:ok, %Actor{} = group} <- Actors.get_group_by_actor_id(group_id),
          %Actor{} = creator <- Actors.get_actor(creator_id),
@@ -76,6 +77,7 @@ defmodule Mobilizon.Federation.ActivityPub.Types.Posts do
     }
 
     with {:ok, %Post{} = post} <- Posts.delete_post(post),
+         {:ok, _} <- PostsActivity.insert_activity(post, subject: "post_deleted"),
          {:ok, true} <- Cachex.del(:activity_pub, "post_#{post.slug}"),
          {:ok, %Tombstone{} = _tombstone} <-
            Tombstone.create_tombstone(%{uri: post.url, actor_id: actor.id}) do

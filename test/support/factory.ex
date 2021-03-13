@@ -395,7 +395,6 @@ defmodule Mobilizon.Factory do
     uuid = Ecto.UUID.generate()
     actor = build(:actor)
     group = build(:group)
-    comment = build(:comment, actor: actor, attributed_to: group)
     slug = "my-awesome-discussion-#{ShortUUID.encode!(uuid)}"
 
     %Mobilizon.Discussions.Discussion{
@@ -404,9 +403,25 @@ defmodule Mobilizon.Factory do
       creator: actor,
       actor: group,
       id: uuid,
-      last_comment: comment,
-      comments: [comment],
+      last_comment: nil,
+      comments: [],
       url: Routes.page_url(Endpoint, :discussion, group.preferred_username, slug)
+    }
+  end
+
+  def mobilizon_activity_factory do
+    group = build(:group)
+    actor = build(:actor)
+    event = build(:event, organizer_actor: actor, attributed_to: group)
+
+    %Mobilizon.Activities.Activity{
+      type: :event,
+      subject: :event_created,
+      subject_params: %{event_title: event.title},
+      author: actor,
+      group: group,
+      object_type: :event,
+      object_id: to_string(event.id)
     }
   end
 end

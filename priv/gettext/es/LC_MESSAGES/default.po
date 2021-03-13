@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 14:39+0000\n"
-"PO-Revision-Date: 2021-01-20 16:18+0000\n"
+"PO-Revision-Date: 2021-03-11 02:14+0000\n"
 "Last-Translator: Berto Te <ateira@3fpj.com>\n"
 "Language-Team: Spanish <https://weblate.framasoft.org/projects/mobilizon/"
 "backend/es/>\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.4\n"
+"X-Generator: Weblate 4.5.1\n"
 
 #: lib/web/templates/email/password_reset.html.eex:48
 #, elixir-format
@@ -948,8 +948,8 @@ msgstr[0] ""
 "Si necesitas cancelar su participación, sólo accede a la página del evento "
 "mediante el enlace debajo y presiona el botón."
 msgstr[1] ""
-"Si necesitas cancelar su participación, sólo accede a la página del evento "
-"mediante el enlace debajo y presiona el botón."
+"Si desea cancelar su participación en uno o varios eventos, visite las "
+"páginas de los eventos a través de los enlaces de arriba y presiona el botón."
 
 #: lib/web/templates/email/pending_participation_notification.html.eex:38
 #: lib/web/templates/email/pending_participation_notification.text.eex:4
@@ -1478,11 +1478,11 @@ msgstr ""
 "instancia de Mobilizon. El software de Mobilizon es proporcionado por el "
 "equipo de contribuyentes de Mobilizon, respaldado por <a href=\"https"
 "://framasoft.org\"> Framasoft </a>, una organización educativa popular "
-"francesa sin fines de lucro que aboga por el Software Libre / Libre . A "
-"menos que se indique explícitamente, esta instancia de Mobilizon es un "
-"servicio independiente que utiliza el código fuente de Mobilizon. Puede "
-"encontrar más información sobre esta instancia en la página <a href=\"/about/"
-"instance\"> \"Acerca de esta instancia\" </a>."
+"francesa sin fines de lucro que aboga por el Software Libre. A menos que se "
+"indique explícitamente, esta instancia de Mobilizon es un servicio "
+"independiente que utiliza el código fuente de Mobilizon. Puede encontrar más "
+"información sobre esta instancia en la página <a href=\"/about/instance\"> "
+"\"Acerca de esta instancia\" </a>."
 
 #: lib/web/templates/api/terms.html.eex:43
 #, elixir-format
@@ -1667,17 +1667,12 @@ msgstr "Título del evento"
 msgid "There have been changes for <b>%{title}</b> so we'd thought we'd let you know."
 msgstr "Ha habido cambios para<b>% {title}</b>, así que pensamos en avisarle."
 
-#: lib/web/templates/error/500_page.html.eex:46
-#, elixir-format
-msgid "The Mobilizon server seems to be temporarily down."
-msgstr "El servidor de Mobilizon parece estar temporalmente inactivo."
-
 #: lib/web/templates/error/500_page.html.eex:7
 #, elixir-format
 msgid "This page is not correct"
 msgstr "Esta página no es correcta"
 
-#: lib/web/templates/error/500_page.html.eex:45
+#: lib/web/templates/error/500_page.html.eex:50
 #, elixir-format
 msgid "We're sorry, but something went wrong on our end."
 msgstr "Lo sentimos, pero algo salió mal por nuestra parte."
@@ -1707,3 +1702,28 @@ msgstr "Flujo público de eventos de %{actor} a %{instance}"
 #, elixir-format
 msgid "Feed for %{email} on %{instance}"
 msgstr "Flujo para %{email} en %{instance}"
+
+#: lib/web/templates/error/500_page.html.eex:57
+#, elixir-format
+msgid "If the issue persists, you may contact the server administrator at %{contact}."
+msgstr ""
+"Si el problema persiste, puede comunicarse con el administrador del servidor "
+"en %{contact}."
+
+#: lib/web/templates/error/500_page.html.eex:55
+#, elixir-format
+msgid "If the issue persists, you may try to contact the server administrator."
+msgstr ""
+"Si el problema persiste, puede intentar comunicarse con el administrador del "
+"servidor."
+
+#: lib/web/templates/error/500_page.html.eex:68
+#, elixir-format
+msgid "Technical details"
+msgstr "Detalles técnicos"
+
+#: lib/web/templates/error/500_page.html.eex:52
+#, elixir-format
+msgid "The Mobilizon server %{instance} seems to be temporarily down."
+msgstr ""
+"El servidor de Mobilizon %{instance} parece estar temporalmente inactivo."
