@@ -20,7 +20,7 @@
         </template>
       </b-autocomplete>
     </b-field>
-    <b-field v-if="canDoGeoLocation">
+    <b-field v-if="isSecureContext()">
       <b-button
         type="is-text"
         v-if="!gettingLocation"
@@ -72,8 +72,6 @@ import { IConfig } from "../../types/config.model";
 export default class AddressAutoComplete extends Vue {
   @Prop({ required: true }) value!: IAddress;
   @Prop({ required: false, default: false }) type!: string | false;
-  @Prop({ required: false, default: true, type: Boolean })
-  doGeoLocation!: boolean;
 
   addressData: IAddress[] = [];
 
@@ -81,7 +79,7 @@ export default class AddressAutoComplete extends Vue {
 
   isFetching = false;
 
-  initialQueryText = "";
+  queryText: string = (this.value && new Address(this.value).fullName) || "";
 
   addressModalActive = false;
 
@@ -149,21 +147,12 @@ export default class AddressAutoComplete extends Vue {
     }
   }
 
-  get queryText(): string {
-    if (this.value) {
-      return new Address(this.value).fullName;
-    }
-    return this.initialQueryText;
-  }
-
-  set queryText(queryText: string) {
-    this.initialQueryText = queryText;
-  }
-
   @Watch("value")
   updateEditing(): void {
     if (!this.value?.id) return;
     this.selected = this.value;
+    const address = new Address(this.selected);
+    this.queryText = `${address.poiInfos.name} ${address.poiInfos.alternativeName}`;
   }
 
   updateSelected(option: IAddress): void {
@@ -255,12 +244,8 @@ export default class AddressAutoComplete extends Vue {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  get isSecureContext(): boolean {
+  isSecureContext(): boolean {
     return window.isSecureContext;
-  }
-
-  get canDoGeoLocation(): boolean {
-    return this.isSecureContext && this.doGeoLocation;
   }
 }
 </script>

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 14:40+0000\n"
-"PO-Revision-Date: 2021-02-26 09:08+0000\n"
+"PO-Revision-Date: 2020-11-05 10:29+0000\n"
 "Last-Translator: x <hardwired1.0@protonmail.com>\n"
 "Language-Team: Italian <https://weblate.framasoft.org/projects/mobilizon/"
 "backend/it/>\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.4.2\n"
+"X-Generator: Weblate 4.1\n"
 
 #, elixir-format
 #: lib/web/templates/email/password_reset.html.eex:48
@@ -1487,7 +1487,7 @@ msgstr ""
 "software Mobilizon è fornito dal team di collaboratori di Mobilizon, "
 "supportato da <a href=\"https://framasoft.org\">Framasoft</a>, "
 "un'organizzazione francese senza scopo di lucro che sostiene il software "
-"gratuito/libero. Se non diversamente specificato, questa istanza di "
+"libero / libero. Se non diversamente specificato, questa istanza di "
 "Mobilizon è un servizio indipendente che utilizza il codice sorgente di "
 "Mobilizon. Puoi trovare ulteriori informazioni su questa istanza nella "
 "pagina <a href=\"/about/instance\">\"Informazioni su questa istanza\"</a>."
@@ -1681,12 +1681,17 @@ msgstr ""
 "informarti."
 
 #, elixir-format
+#: lib/web/templates/error/500_page.html.eex:46
+msgid "The Mobilizon server seems to be temporarily down."
+msgstr "Il server Mobilizon sembra essere temporaneamente inattivo."
+
+#, elixir-format
 #: lib/web/templates/error/500_page.html.eex:7
 msgid "This page is not correct"
 msgstr "Questa pagina non è corretta"
 
 #, elixir-format
-#: lib/web/templates/error/500_page.html.eex:50
+#: lib/web/templates/error/500_page.html.eex:45
 msgid "We're sorry, but something went wrong on our end."
 msgstr "Siamo spiacenti, ma qualcosa è andato storto da parte nostra."
 
@@ -1699,39 +1704,19 @@ msgstr "Questo è un sito dimostrativo per testare Mobilizon."
 #, elixir-format
 #: lib/service/metadata/actor.ex:53 lib/service/metadata/actor.ex:60
 msgid "%{name}'s feed"
-msgstr "Flusso di %{name}"
+msgstr ""
 
 #, elixir-format
 #: lib/service/export/feed.ex:77
 msgid "%{actor}'s private events feed on %{instance}"
-msgstr "Flusso privato degli eventi di %{actor} su %{instance}"
+msgstr ""
 
 #, elixir-format
 #: lib/service/export/feed.ex:72
 msgid "%{actor}'s public events feed on %{instance}"
-msgstr "Flusso pubblico degli eventi di %{actor} su %{instance}"
+msgstr ""
 
 #, elixir-format
 #: lib/service/export/feed.ex:203
 msgid "Feed for %{email} on %{instance}"
-msgstr "Flusso per %{email} su %{instance}"
-
-#, elixir-format
-#: lib/web/templates/error/500_page.html.eex:57
-msgid "If the issue persists, you may contact the server administrator at %{contact}."
 msgstr ""
-
-#, elixir-format
-#: lib/web/templates/error/500_page.html.eex:55
-msgid "If the issue persists, you may try to contact the server administrator."
-msgstr ""
-
-#, elixir-format
-#: lib/web/templates/error/500_page.html.eex:68
-msgid "Technical details"
-msgstr ""
-
-#, elixir-format, fuzzy
-#: lib/web/templates/error/500_page.html.eex:52
-msgid "The Mobilizon server %{instance} seems to be temporarily down."
-msgstr "Il server Mobilizon sembra essere temporaneamente inattivo."

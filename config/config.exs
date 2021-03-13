@@ -32,8 +32,6 @@ config :mobilizon, :instance,
   orphan_upload_grace_period_hours: 48,
   remove_unconfirmed_users: true,
   unconfirmed_user_grace_period_hours: 48,
-  activity_expire_days: 365,
-  activity_keep_number: 100,
   email_from: "noreply@localhost",
   email_reply_to: "noreply@localhost"
 
@@ -263,7 +261,7 @@ config :mobilizon, :anonymous,
 config :mobilizon, Oban,
   repo: Mobilizon.Storage.Repo,
   log: false,
-  queues: [default: 10, search: 5, mailers: 10, background: 5, activity: 5],
+  queues: [default: 10, search: 5, mailers: 10, background: 5],
   plugins: [
     {Oban.Plugins.Cron,
      crontab: [
@@ -271,8 +269,7 @@ config :mobilizon, Oban,
        {"17 * * * *", Mobilizon.Service.Workers.RefreshGroups, queue: :background},
        # To be activated in Mobilizon 1.2
        # {"@hourly", Mobilizon.Service.Workers.CleanOrphanMediaWorker, queue: :background},
-       {"@hourly", Mobilizon.Service.Workers.CleanUnconfirmedUsersWorker, queue: :background},
-       {"@daily", Mobilizon.Service.Workers.CleanOldActivityWorker, queue: :background}
+       {"@hourly", Mobilizon.Service.Workers.CleanUnconfirmedUsersWorker, queue: :background}
      ]},
     {Oban.Plugins.Pruner, max_age: 300}
   ]

@@ -10,7 +10,6 @@ import { Address } from "../address.model";
 import { ActorType, Openness } from "../enums";
 import type { IMember } from "./member.model";
 import type { ITodoList } from "../todolist";
-import { IActivity } from "../activity.model";
 
 export interface IGroup extends IActor {
   members: Paginate<IMember>;
@@ -21,7 +20,6 @@ export interface IGroup extends IActor {
   physicalAddress: IAddress;
   openness: Openness;
   manuallyApprovesFollowers: boolean;
-  activity: Paginate<IActivity>;
 }
 
 export class Group extends Actor implements IGroup {
@@ -43,7 +41,6 @@ export class Group extends Actor implements IGroup {
 
     this.patch(hash);
   }
-  activity: Paginate<IActivity> = { elements: [], total: 0 };
 
   openness: Openness = Openness.INVITE_ONLY;
 

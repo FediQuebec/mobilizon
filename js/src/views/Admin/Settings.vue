@@ -71,7 +71,7 @@
             {{ $t("Main languages you/your moderators speak") }}
           </small>
           <b-taginput
-            v-model="instanceLanguages"
+            v-model="adminSettings.instanceLanguages"
             :data="filteredLanguages"
             autocomplete
             :open-on-focus="true"
@@ -332,7 +332,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Watch } from "vue-property-decorator";
 import {
   ADMIN_SETTINGS,
   SAVE_ADMIN_SETTINGS,
@@ -361,23 +361,24 @@ export default class Settings extends Vue {
 
   RouteName = RouteName;
 
-  get instanceLanguages(): string[] {
-    const languageCodes = this.adminSettings.instanceLanguages || [];
-    return languageCodes
-      .map((code) => this.languageForCode(code))
-      .filter((language) => language) as string[];
-  }
-
-  set instanceLanguages(instanceLanguages: string[]) {
-    this.adminSettings.instanceLanguages = instanceLanguages
-      .map((language) => {
-        return this.codeForLanguage(language);
-      })
-      .filter((code) => code !== undefined) as string[];
+  @Watch("languages")
+  setCorrectLanguagesNames(): void {
+    if (this.languages && this.adminSettings) {
+      this.adminSettings.instanceLanguages = this.adminSettings.instanceLanguages
+        .map((code) => this.languageForCode(code))
+        .filter((language) => language) as string[];
+    }
   }
 
   async updateSettings(): Promise<void> {
     const variables = { ...this.adminSettings };
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    variables.instanceLanguages = variables.instanceLanguages.map(
+      (language) => {
+        return this.codeForLanguage(language);
+      }
+    );
     try {
       await this.$apollo.mutate({
         mutation: SAVE_ADMIN_SETTINGS,
@@ -407,7 +408,7 @@ export default class Settings extends Vue {
       : [];
   }
 
-  private codeForLanguage(language: string): string | undefined {
+  codeForLanguage(language: string): string | undefined {
     if (this.languages) {
       const lang = this.languages.find(({ name }) => name === language);
       if (lang) return lang.code;
@@ -415,7 +416,7 @@ export default class Settings extends Vue {
     return undefined;
   }
 
-  private languageForCode(codeGiven: string): string | undefined {
+  languageForCode(codeGiven: string): string | undefined {
     if (this.languages) {
       const lang = this.languages.find(({ code }) => code === codeGiven);
       if (lang) return lang.name;

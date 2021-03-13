@@ -459,7 +459,6 @@ defmodule Mobilizon.Federation.ActivityPub do
             Map.get(additional, :force_member_removal, false) ||
               !Actors.is_only_administrator?(member_id, group_id)},
          {:delete, {:ok, %Member{} = member}} <- {:delete, Actors.delete_member(member)},
-         Mobilizon.Service.Activity.Member.insert_activity(member, subject: "member_quit"),
          leave_data <- %{
            "to" => [group_members_url],
            "cc" => [group_url],
@@ -478,17 +477,12 @@ defmodule Mobilizon.Federation.ActivityPub do
   def remove(
         %Member{} = member,
         %Actor{type: :Group, url: group_url, members_url: group_members_url},
-        %Actor{url: moderator_url} = moderator,
+        %Actor{url: moderator_url},
         local,
         _additional \\ %{}
       ) do
     with {:ok, %Member{id: member_id}} <- Actors.update_member(member, %{role: :rejected}),
          %Member{} = member <- Actors.get_member(member_id),
-         {:ok, _} <-
-           Mobilizon.Service.Activity.Member.insert_activity(member,
-             moderator: moderator,
-             subject: "member_removed"
-           ),
          :ok <- Group.send_notification_to_removed_member(member),
          remove_data <- %{
            "to" => [group_members_url],
@@ -524,11 +518,6 @@ defmodule Mobilizon.Federation.ActivityPub do
              invited_by_id: actor_id,
              url: Map.get(additional, :url)
            }),
-         {:ok, _} <-
-           Mobilizon.Service.Activity.Member.insert_activity(member,
-             moderator: actor,
-             subject: "member_invited"
-           ),
          invite_data <- %{
            "type" => "Invite",
            "attributedTo" => group_url,
@@ -710,7 +699,7 @@ defmodule Mobilizon.Federation.ActivityPub do
   @spec publish(Actor.t(), Activity.t()) :: :ok
   def publish(actor, %Activity{recipients: recipients} = activity) do
     Logger.debug("Publishing an activity")
-    Logger.debug(inspect(activity, pretty: true))
+    Logger.debug(inspect(activity))
 
     public = Visibility.is_public?(activity)
     Logger.debug("is public ? #{public}")
@@ -925,19 +914,12 @@ defmodule Mobilizon.Federation.ActivityPub do
   defp accept_join(%Member{} = member, additional) do
     with {:ok, %Member{} = member} <-
            Actors.update_member(member, %{role: :member}),
-         {:ok, _} <-
-           Mobilizon.Service.Activity.Member.insert_activity(member,
-             subject: "member_approved"
-           ),
          _ <-
            unless(is_nil(member.parent.domain),
              do: Refresher.fetch_group(member.parent.url, member.actor)
            ),
          Absinthe.Subscription.publish(Endpoint, member.actor,
-           group_membership_changed: [
-             Actor.preferred_username_and_domain(member.parent),
-             member.actor.id
-           ]
+           group_membership_changed: member.actor.id
          ),
          member_as_data <- Convertible.model_to_as(member),
          audience <-
@@ -967,10 +949,6 @@ defmodule Mobilizon.Federation.ActivityPub do
          %Actor{url: actor_url} <- Actors.get_actor(actor_id),
          {:ok, %Member{id: member_id} = member} <-
            Actors.update_member(member, %{role: :member}),
-         {:ok, _} <-
-           Mobilizon.Service.Activity.Member.insert_activity(member,
-             subject: "member_accepted_invitation"
-           ),
          accept_data <- %{
            "type" => "Accept",
            "attributedTo" => member.parent.url,
@@ -1051,9 +1029,6 @@ defmodule Mobilizon.Federation.ActivityPub do
          %Actor{url: actor_url} <- Actors.get_actor(actor_id),
          {:ok, %Member{url: member_url, id: member_id} = member} <-
            Actors.delete_member(member),
-         Mobilizon.Service.Activity.Member.insert_activity(member,
-           subject: "member_rejected_invitation"
-         ),
          accept_data <- %{
            "type" => "Reject",
            "actor" => actor_url,

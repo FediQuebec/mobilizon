@@ -29,7 +29,6 @@ defmodule Mobilizon.GraphQL.Schema do
   import_types(Schema.Custom.UUID)
   import_types(Schema.Custom.Point)
 
-  import_types(Schema.ActivityType)
   import_types(Schema.UserType)
   import_types(Schema.MediaType)
   import_types(Schema.ActorInterface)

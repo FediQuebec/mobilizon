@@ -86,10 +86,6 @@ $colors: map-merge(
       $link,
       $link-invert,
     ),
-    "grey": (
-      $grey,
-      findColorInvert($grey),
-    ),
   )
 );
 
